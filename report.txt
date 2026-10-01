@@ -1,0 +1,16 @@
+Mod: Manitux domain sistemi (DomainHttpClient, RemoteConfig, ayar ekranı)
+Kontrol raporu✓ DiziKorea (anahtar https://raw.githubusercontent.com/darknesslord19/blackdragon/main/domains.json): 4 get, 0 post DomainHttpClient'a yönlendirilecek
+⚠ PlayerKorea (extractor): ayrı adres https://playerdkorea.xyz, dokunulmaz
+⚠ VideoSeyred (extractor): ayrı adres https://videoseyred.in, dokunulmaz
+⚠ Sabit kalan başka adresler (oynatıcı/CDN olabilir, otomatik değişmez): playerdkorea.xyz, videoseyred.in
+✓ Paket domains.json adresi: https://raw.githubusercontent.com/darknesslord19/blackdragon/main/domains.json
+✓ Plugin DiziKoreaPlugin load() yamalandı (DomainSettings.initialize, ayar ekranı), manifest değişmez.
+
+domains.json kontrolü: https://raw.githubusercontent.com/darknesslord19/blackdragon/main/domains.json
+⚠ "https://raw.githubusercontent.com/darknesslord19/blackdragon/main/domains.json" anahtarı domains.json içinde yok ya da değeri https adresi değil. Eklenti eski adresi kullanır.
+
+domains.json için örnek:
+{
+  "https://raw.githubusercontent.com/darknesslord19/blackdragon/main/domains.json": "https://dizikorea3.com"
+}
+Dosyalar: 2 değişti, 18 eklendi
