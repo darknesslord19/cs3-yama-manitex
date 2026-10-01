@@ -1,0 +1,9 @@
+{
+  "mode": "manitux",
+  "cs3": "job/plugin.cs3",
+  "donor": "job/donor.zip",
+  "key": "https://raw.githubusercontent.com/darknesslord19/blackdragon/main/domains.json",
+  "url": "https://raw.githubusercontent.com/darknesslord19/blackdragon/main/domains.json",
+  "tg": "",
+  "outName": "DiziKorea.cs3"
+}

@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Manitux Domain Sistemi</title>
+<style>
+:root{--bg:#f2f1ec;--fg:#1d1b16;--card:#fff;--ln:#dcd8cc;--ac:#b4490f;--ac2:#b4490f1c;--mu:#6b6558;--wr:#a15c00;--ok:#1d7a4f;--hd:#2a1d12;--hf:#fff1e4}
+@media(prefers-color-scheme:dark){:root{--bg:#14110c;--fg:#eee9dd;--card:#1d1913;--ln:#322c21;--ac:#f08a4b;--ac2:#f08a4b1f;--mu:#a49c8b;--wr:#e3ac4e;--ok:#4cd18f;--hd:#0f0c08;--hf:#fff1e4}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:var(--hd);color:var(--hf);padding:24px 16px 0;border-bottom:3px solid var(--ac)}
+.hw{max-width:780px;margin:auto;padding-bottom:18px}
+h1{font:700 22px/1.2 system-ui,sans-serif;margin:0 0 4px}
+header p{margin:0;font-size:13.5px;opacity:.75}
+main{max-width:780px;margin:auto;padding:16px 14px 50px}
+section{background:var(--card);border:1px solid var(--ln);border-left:4px solid var(--ac);border-radius:10px;padding:14px;margin-bottom:14px}
+.hd{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.n{flex:none;width:26px;height:26px;border-radius:50%;background:var(--ac);color:#fff;font:700 13px/26px system-ui;text-align:center}
+h2{font-size:16px;margin:0;flex:1}
+.b{font-size:12px;font-weight:600;padding:2px 9px;border-radius:99px;border:1px solid var(--ln);color:var(--mu);white-space:nowrap}
+.b.ok{background:var(--ac2);border-color:var(--ac);color:var(--ac)}
+.d{margin:0 0 10px;color:var(--mu);font-size:13.5px}.d b{color:var(--fg)}
+.pick{display:inline-block;background:var(--ac);color:#fff;border-radius:8px;padding:10px 16px;font:600 14px system-ui;cursor:pointer;margin-right:8px}
+.pick input{display:none}
+button{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:11px 18px;font:600 14px system-ui;margin:8px 8px 0 0}
+button.g{background:transparent;color:var(--ac);border:1px solid var(--ac);padding:8px 13px;font-size:13px}
+input[type=text],textarea,select{width:100%;background:var(--bg);color:inherit;border:1px solid var(--ln);border-radius:8px;padding:9px;font:13px ui-monospace,Menlo,monospace;margin-top:5px}
+textarea{min-height:60px}
+.l{font-size:12.5px;color:var(--mu);margin-top:10px;display:block}
+.gr{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:560px){.gr{grid-template-columns:1fr}}
+.m{color:var(--mu);font-size:13px;margin-top:4px;word-break:break-all}.w{color:var(--wr)}.ok{color:var(--ok)}
+code{font:12.5px ui-monospace,Menlo,monospace;background:var(--ac2);padding:1px 5px;border-radius:4px;word-break:break-all}
+pre{margin:6px 0 0;padding:10px;background:var(--bg);border:1px solid var(--ln);border-radius:8px;font:12px ui-monospace,Menlo,monospace;overflow-x:auto;white-space:pre-wrap;word-break:break-all}
+details{border-top:1px solid var(--ln);margin-top:12px;padding-top:10px}summary{cursor:pointer;font-weight:600;font-size:14px;color:var(--ac)}
+.row{margin-top:8px}.row code{display:block;background:none;padding:0;color:var(--mu);font-size:12px}.row input{margin-top:3px;padding:7px 9px}
+ol.k{margin:6px 0 0;padding-left:20px;font-size:13.5px}ol.k li{margin:3px 0}
+
+.l{font-size:12.5px;color:var(--mu);margin-top:10px;display:block}
+</style></head><body>
+<header><div class="hw"><h1>Manitux Domain Sistemi</h1><p>Eklentiyi Manitux domain sistemine bağlar: domains.json'dan otomatik güncelleme, ayar ekranı, hata sonrası yeniden deneme</p></div></header>
+<main>
+
+<section><div class="hd"><span class="n">1</span><h2>Eklenti</h2><span class="b" id="s1">eksik</span></div>
+<p class="d">Domain sistemi eklenecek <b>eklentinin smali zip'i</b>. Plugin sınıfını, kaynak adını ve adresini kendisi bulur.</p>
+<label class="pick">Eklenti zip seç<input type="file" accept=".smali,.zip,text/plain" multiple onchange="addF(this.files,0);this.value=''"></label>
+<button class="g" onclick="tgt=[];run()">Temizle</button>
+<div class="m" id="i1"></div></section>
+
+<section><div class="hd"><span class="n">2</span><h2>Domains zip</h2><span class="b" id="s2">eksik</span></div>
+<p class="d">Manitux paketi (<b>manitux-domains.zip</b>): RemoteConfig, DomainHttpClient, DomainSettings ve bağlı sınıflar. Yerleşik paket varsa kendiliğinden yüklenir, istersen kendi zip'ini seç.</p>
+<label class="pick">Domains zip seç<input type="file" accept=".smali,.zip,text/plain" multiple onchange="addF(this.files,1);this.value=''"></label>
+<button class="g" onclick="don=[];donBuiltin=false;run()">Temizle</button>
+<div class="m" id="i2"></div></section>
+
+<section><div class="hd"><span class="n">3</span><h2>Ayarlar</h2></div>
+<span class="l">domains.json linki (paketteki adresin yerine yazılır)</span>
+<input type="text" id="url" value="https://raw.githubusercontent.com/darknesslord19/blackdragon/main/domains.json" oninput="upd()">
+</section>
+
+<section><div class="hd"><span class="n">4</span><h2>Çıktı</h2></div>
+<div id="out" class="d">Önce 1. ve 2. adımı tamamla.</div>
+<button id="db" onclick="dl()" style="display:none">ZIP indir</button>
+<button class="g" id="ab" onclick="audit()" style="display:none">Kontrol raporu</button>
+<div id="rp" style="margin-top:12px"></div></section>
+</main>
+
+<script>
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let tgt=[],don=[],st=null,pi=0,S=[];
+const RQ='Lcom/lagradost/nicehttp/Requests;';
+const GS='Ljava/lang/String;Ljava/util/Map;Ljava/lang/String;Ljava/util/Map;Ljava/util/Map;ZILjava/util/concurrent/TimeUnit;JLokhttp3/Interceptor;ZLcom/lagradost/nicehttp/ResponseParser;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;';
+const PS='Ljava/lang/String;Ljava/util/Map;Ljava/lang/String;Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ljava/util/List;Ljava/lang/Object;Lokhttp3/RequestBody;ZILjava/util/concurrent/TimeUnit;JLokhttp3/Interceptor;ZLcom/lagradost/nicehttp/ResponseParser;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;';
+const rx=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+
+async function addF(fl,d){$('#i'+(d?2:1)).textContent='';try{for(const f of fl){const a=/\.zip$/i.test(f.name)?await readZip(await f.arrayBuffer()):[{name:f.webkitRelativePath||f.name,text:await f.text()}];(d?don:tgt).push(...a)}}catch(e){run();$('#i'+(d?2:1)).innerHTML='<span class=w>Zip okunamadı: '+esc(e.message)+'</span>';return}run()}
+/* yedek inflate: DecompressionStream olmayan tarayıcılar için */
+function inflateRaw(src,usize){
+ const dest=new Uint8Array(usize);let di=0,pos=0,tag=0,bc=0;
+ const T=()=>({t:new Uint16Array(16),x:new Uint16Array(288)});
+ const lt=T(),dt=T(),ct=T(),lens=new Uint8Array(320);
+ const lb=new Uint8Array(30),ls=new Uint16Array(30),db=new Uint8Array(30),ds=new Uint16Array(30);
+ const bb=(b,s,dl,f)=>{let i,sum;for(i=0;i<dl;i++)b[i]=0;for(i=0;i<30-dl;i++)b[i+dl]=(i/dl)|0;for(sum=f,i=0;i<30;i++){s[i]=sum;sum+=1<<b[i]}};
+ bb(lb,ls,4,3);bb(db,ds,2,1);lb[28]=0;ls[28]=258;
+ const build=(t,l,o,n)=>{const offs=new Uint16Array(16);for(let i=0;i<16;i++)t.t[i]=0;for(let i=0;i<n;i++)t.t[l[o+i]]++;t.t[0]=0;let sum=0;for(let i=0;i<16;i++){offs[i]=sum;sum+=t.t[i]}for(let i=0;i<n;i++)if(l[o+i])t.x[offs[l[o+i]]++]=i};
+ const bit=()=>{if(!bc--){tag=src[pos++];bc=7}const b=tag&1;tag>>>=1;return b};
+ const rb=(n,base)=>{if(!n)return base;while(bc<24){tag|=(src[pos++]||0)<<bc;bc+=8}const v=tag&(0xffff>>>(16-n));tag>>>=n;bc-=n;return v+base};
+ const sym=t=>{while(bc<24){tag|=(src[pos++]||0)<<bc;bc+=8}let sum=0,cur=0,len=0,tg=tag;do{cur=2*cur+(tg&1);tg>>>=1;++len;sum+=t.t[len];cur-=t.t[len]}while(cur>=0);tag=tg;bc-=len;return t.x[sum+cur]};
+ const fixed=()=>{let i;for(i=0;i<7;i++)lt.t[i]=0;lt.t[7]=24;lt.t[8]=152;lt.t[9]=112;for(i=0;i<24;i++)lt.x[i]=256+i;for(i=0;i<144;i++)lt.x[24+i]=i;for(i=0;i<8;i++)lt.x[168+i]=280+i;for(i=0;i<112;i++)lt.x[176+i]=144+i;for(i=0;i<5;i++)dt.t[i]=0;dt.t[5]=32;for(i=0;i<32;i++)dt.x[i]=i};
+ const CI=[16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15];
+ const dyn=()=>{const hl=rb(5,257),hd=rb(5,1),hc=rb(4,4);let i,num,len;for(i=0;i<19;i++)lens[i]=0;for(i=0;i<hc;i++)lens[CI[i]]=rb(3,0);build(ct,lens,0,19);
+  for(num=0;num<hl+hd;){const s=sym(ct);if(s==16){const p=lens[num-1];for(len=rb(2,3);len;--len)lens[num++]=p}else if(s==17){for(len=rb(3,3);len;--len)lens[num++]=0}else if(s==18){for(len=rb(7,11);len;--len)lens[num++]=0}else lens[num++]=s}
+  build(lt,lens,0,hl);build(dt,lens,hl,hd)};
+ const block=()=>{for(;;){let s=sym(lt);if(s==256)return;if(s<256)dest[di++]=s;else{s-=257;const len=rb(lb[s],ls[s]),d=sym(dt),off=di-rb(db[d],ds[d]);for(let i=off;i<off+len;i++)dest[di++]=dest[i]}}};
+ let last;do{last=bit();const type=rb(2,0);
+  if(type==0){while(bc>8){pos--;bc-=8}let len=src[pos+1]*256+src[pos];pos+=4;for(let i=len;i;--i)dest[di++]=src[pos++];bc=0;tag=0}
+  else if(type==1){fixed();block()}else if(type==2){dyn();block()}else throw new Error('inflate: geçersiz blok')}while(!last);
+ return dest}
+
+async function inflate(d,us){try{if(typeof DecompressionStream!=='undefined')return new Uint8Array(await new Response(new Blob([d]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer())}catch(e){}return inflateRaw(d,us)}
+async function readZip(buf){
+ const dv=new DataView(buf),u8=new Uint8Array(buf);let e=u8.length-22;while(e>=0&&dv.getUint32(e,true)!=0x06054b50)e--;
+ if(e<0)throw new Error('geçerli bir zip değil');
+ const n=dv.getUint16(e+10,true);let p=dv.getUint32(e+16,true);const out=[];
+ for(let i=0;i<n;i++){if(dv.getUint32(p,true)!=0x02014b50)throw new Error('zip dizini bozuk');
+  const fl=dv.getUint16(p+8,true),m=dv.getUint16(p+10,true),cs=dv.getUint32(p+20,true),us=dv.getUint32(p+24,true),nl=dv.getUint16(p+28,true),xl=dv.getUint16(p+30,true),cl=dv.getUint16(p+32,true),off=dv.getUint32(p+42,true);
+  const name=new TextDecoder().decode(u8.subarray(p+46,p+46+nl));p+=46+nl+xl+cl;if(!name.endsWith('.smali'))continue;
+  if(fl&1)throw new Error('şifreli zip desteklenmiyor');if(cs==0xffffffff||us==0xffffffff)throw new Error('ZIP64 desteklenmiyor');
+  const lo=off+30+dv.getUint16(off+26,true)+dv.getUint16(off+28,true);let d=u8.subarray(lo,lo+cs);
+  if(m==8)d=await inflate(d,us);else if(m!=0)throw new Error('desteklenmeyen sıkıştırma ('+m+'): '+name);
+  out.push({name,text:new TextDecoder().decode(d)})}
+ return out}
+function crc(u){let c;const t=crc.t||(crc.t=[...Array(256)].map((_,n)=>{c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;return c>>>0}));let r=-1;for(const b of u)r=t[(r^b)&255]^(r>>>8);return(r^-1)>>>0}
+function mkZip(items){const en=new TextEncoder(),parts=[],cd=[];let off=0,cs=0;
+ for(const it of items){const nb=en.encode(it.name),d=en.encode(it.text),c=crc(d);
+  const h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x800,true);h.setUint32(14,c,true);h.setUint32(18,d.length,true);h.setUint32(22,d.length,true);h.setUint16(26,nb.length,true);
+  const g=new DataView(new ArrayBuffer(46));g.setUint32(0,0x02014b50,true);g.setUint16(4,20,true);g.setUint16(6,20,true);g.setUint16(8,0x800,true);g.setUint32(16,c,true);g.setUint32(20,d.length,true);g.setUint32(24,d.length,true);g.setUint16(28,nb.length,true);g.setUint32(42,off,true);
+  parts.push(h.buffer,nb,d);cd.push(g.buffer,nb);off+=30+nb.length+d.length;cs+=46+nb.length}
+ const e=new DataView(new ArrayBuffer(22));e.setUint32(0,0x06054b50,true);e.setUint16(8,items.length,true);e.setUint16(10,items.length,true);e.setUint32(12,cs,true);e.setUint32(16,off,true);
+ return new Blob([...parts,...cd,e.buffer],{type:'application/zip'})}
+
+/* ---- smali metin ---- */
+const unq=s=>s.replace(/\\(u[0-9a-fA-F]{4}|.)/g,(m,c)=>c[0]=='u'&&c.length==5?String.fromCharCode(parseInt(c.slice(1),16)):({n:'\n',t:'\t',r:'\r'}[c]??c));
+const enq=s=>s.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,'\\n').replace(/\r/g,'\\r').replace(/\t/g,'\\t');
+const LIT=/^(\s*const-string(?:\/jumbo)?\s+[vp]\d+,\s*")((?:[^"\\]|\\.)*)("\s*)$/;
+const clsOf=f=>(f.text.match(/^\.class[^\n]*?L([^;\s]+);/m)||[])[1];
+const PL='Lcom/lagradost/cloudstream3/plugins/Plugin;';
+const host=u=>{try{return new URL(u).hostname}catch(e){return''}};
+/* ---- analiz ---- */
+let BUILTIN_B64='',donBuiltin=false,mi=0;const KEYS={};
+function after(L,i,re,reg){for(let j=i+1;j<Math.min(i+16,L.length);j++){const l=L[j],m=l.match(re);if(m)return m;
+  if(l.startsWith('.end method'))return null;
+  if(reg&&new RegExp('^\\s*(?:const(?:-string(?:/jumbo)?|/4|/16|/high16)?|move-result(?:-object)?|new-instance)\\s+'+reg+'\\b').test(l))return null}return null}
+const MURL=/^\s*(?:iput-object\s+([vp]\d+),\s*p0,\s*L[^;]+;->mainUrl:Ljava\/lang\/String;|invoke-virtual\s+\{p0,\s*([vp]\d+)\},\s*L[^;]+;->setMainUrl\(Ljava\/lang\/String;\)V)/;
+function findMain(f){
+ const L=f.text.split(/\r?\n/),cls=clsOf(f),sup=(f.text.match(/^\.super L([^;]+);/m)||[])[1];if(!cls||!sup)return null;
+ let r=null,name='';
+ for(let i=0;i<L.length;i++){const m=L[i].match(LIT);if(!m)continue;const v=unq(m[2]),reg=m[1].match(/([vp]\d+),/)[1];
+  if(!r&&/^https?:\/\//.test(v)){const n=after(L,i,MURL,reg);if(n&&(n[1]||n[2])==reg)r={li:i,ind:m[1].match(/^\s*/)[0],reg,url:v}}
+  if(!name){const n=after(L,i,/^\s*iput-object\s+([vp]\d+),\s*p0,\s*L[^;]+;->name:/,reg);if(n&&n[1]==reg)name=v}}
+ if(!r)return null;
+ const ok=(k,S)=>f.text.split(RQ+'->'+k+'$default('+RQ+S).length-1,cnt=k=>f.text.split(RQ+'->'+k+'$default(').length-1;
+ const isMain=sup=='com/lagradost/cloudstream3/MainAPI'||/^\.method [^\n]*\bsetMainUrl\(Ljava\/lang\/String;\)V/m.test(f.text);
+ return{f,cls,sup,name,...r,isMain,isExt:/ExtractorApi$/.test(sup),g:ok('get',GS),p:ok('post',PS),gx:cnt('get')-ok('get',GS),px:cnt('post')-ok('post',PS),done:f.text.includes(cls+'$Mx;')}}
+
+const defKey=m=>(m.name||m.cls.split('/').pop()).toLowerCase().replace(/[^a-z0-9._-]/g,'');
+const keyOf=m=>(KEYS[m.cls]!==undefined&&KEYS[m.cls]!=='')?KEYS[m.cls].trim().toLowerCase():defKey(m);
+function setKey(i,v){KEYS[st.mains[i].cls]=v;upd()}
+function analyze(){
+ const r={plugs:[],mains:[],exts:[],clo:[],skip:[],rc:null,root:null,durl:null,existing:false};
+ tgt.forEach(f=>{const c=clsOf(f);if(!c)return;
+  if(/^\.super Lcom\/lagradost\/cloudstream3\/plugins\/Plugin;/m.test(f.text)&&/^\.method [^\n]*\bload\(Landroid\/content\/Context;\)V/m.test(f.text)&&!f.text.includes('load$orig'))r.plugs.push({f,cls:c});
+  if(/L[\w\/$]*\/shared\/(RemoteConfig|DomainHttpClient);/.test(f.text)&&!/\$Mx;/.test(f.text))r.existing=true;
+  const m=findMain(f);if(m){if(m.isMain)r.mains.push(m);else if(m.isExt)r.exts.push(m)}});
+ const map={};don.forEach(f=>{const c=clsOf(f);if(c)map[c]=f});
+ r.rc=Object.keys(map).find(c=>/\/RemoteConfig$/.test(c));
+ if(r.rc){r.root=r.rc.slice(0,r.rc.lastIndexOf('/'));
+  const seeds=Object.keys(map).filter(c=>c.startsWith(r.root+'/')&&!c.includes('$')),seen=new Set(seeds),q=[...seeds];
+  while(q.length){const c=q.pop();for(const m of map[c].text.matchAll(/L([A-Za-z0-9_\/$]+);/g)){const n=m[1];if(map[n]&&!seen.has(n)){seen.add(n);q.push(n)}}}
+  r.clo=[...seen].map(c=>map[c]);r.skip=Object.keys(map).filter(c=>!seen.has(c));
+  r.durl=(map[r.rc].text.match(/https:\/\/raw\.githubusercontent\.com\/[^"\s]+\.json/)||[])[0]}
+ return r}
+function run(){
+ st=analyze();pi=Math.min(pi,Math.max(0,st.plugs.length-1));mi=Math.min(mi,Math.max(0,st.mains.length-1));
+ const a=st,np=a.plugs.length;
+ $('#s1').textContent=np&&a.mains.length?'hazır':(tgt.length?(np?'kaynak yok':'Plugin yok'):'eksik');$('#s1').className='b'+(np&&a.mains.length?' ok':'');
+ let h='';
+ if(np>1)h+=`Plugin sınıfı:<select onchange="pi=+this.value;upd()">${a.plugs.map((p,i)=>`<option value="${i}"${i==pi?' selected':''}>${esc(p.cls)}</option>`).join('')}</select>`;
+ else if(np)h+='Plugin: '+esc(a.plugs[0].cls);
+ else if(tgt.length)h+='<span class=w>load(Context) içeren Plugin sınıfı yok (ya da zaten yamalı).</span>';
+ a.mains.forEach((m,i)=>{h+=`<div class="c"><b>${esc(m.cls)}</b><div class="m">Eklentideki adres (yedek): <b style="display:inline">${esc(m.url)}</b><br>get: ${m.g}, post: ${m.p}${m.gx+m.px?`, <span class=w>${m.gx+m.px} farklı imza (olduğu gibi gider)</span>`:''}${m.done?'<br><span class=w>Zaten yamalı, atlanır.</span>':''}</div>
+  <div class="m">domains.json anahtarı</div><input type="text" value="${esc(keyOf(m))}" oninput="setKey(${i},this.value)"></div>`});
+ if(a.mains.length>1)h+=`<div class="m" style="margin-top:8px">Ayar ekranı hangi kaynağa bağlansın:</div><select onchange="mi=+this.value;upd()">${a.mains.map((m,i)=>`<option value="${i}"${i==mi?' selected':''}>${esc(m.name||m.cls)}</option>`).join('')}</select>`;
+ if(tgt.length&&!a.mains.length)h+='<div class="m w">Sabit adresli MainAPI sınıfı bulunamadı (mainUrl atayan const-string + iput-object).</div>';
+ if(a.exts.length)h+=`<div class="m">Extractor: ${a.exts.map(x=>esc(x.cls.split('/').pop())+' ('+esc(x.url)+')').join(', ')}</div>`;
+ if(a.existing)h+='<div class="m w">Bu eklentide zaten bir Manitux domain sistemi var gibi görünüyor. Tekrar eklemek çakışabilir.</div>';
+ $('#i1').innerHTML=h;
+ const ok2=!!a.rc;$('#s2').textContent=ok2?a.clo.length+' dosya':(don.length?'RemoteConfig yok':'eksik');$('#s2').className='b'+(ok2?' ok':'');
+ $('#i2').innerHTML=ok2?`${donBuiltin?'Yerleşik paket: ':''}RemoteConfig bulundu, ${a.clo.length} dosya eklenecek.${a.durl?'<br>Paketteki domains.json adresi: <code>'+esc(a.durl)+'</code>':''}`:(don.length?'<span class=w>RemoteConfig bulunamadı.</span>':'');
+ upd()}
+function opts(){return{url:$('#url').value.trim()}}
+function upd(){
+ const a=st;if(!a)return;const ok=a.plugs.length&&a.mains.length&&a.rc;$('#db').style.display=ok?'':'none';$('#ab').style.display=ok?'':'none';
+ if(!ok){$('#out').className='d';$('#out').textContent='Önce 1. ve 2. adımı tamamla.';return}
+ const p=a.plugs[pi],pm=a.mains[mi],mm=a.mains.filter(m=>!m.done);
+ const snip=JSON.stringify(Object.fromEntries(a.mains.map(m=>[keyOf(m),m.url])),null,2);
+ $('#out').className='';$('#out').innerHTML=`<div class="m">Plugin: <code>${esc(p.cls.replace(/\//g,'.'))}</code><br>Domain paketi: ${a.clo.length} dosya<br>Yeni dosya: ${mm.map(m=>'<code>'+esc(m.cls.split('/').pop())+'$Mx</code>').join(', ')||'-'}<br>Ayar ekranı: <code>${esc(keyOf(pm))}</code> kaynağına bağlanır</div>
+ <span class="l">domains.json biçimi: düz nesne, her değer <b>https</b> ile başlayan metin. Liste (köşeli parantez) desteklenmez:</span><pre>${esc(snip)}</pre>
+ <span class="l">Ayar ekranı: CloudStream, Ayarlar, Eklentiler, eklentinin yanındaki dişli düğmesi.</span>`}
+
+function patchMain(m){
+ const f=m.f,eol=f.text.includes('\r\n')?'\r\n':'\n',L=f.text.split(/\r?\n/),D=`L${m.cls}$Mx;`,w=[],R=m.reg;
+ L[m.li]=`${m.ind}const-string ${R}, "${m.url}"${eol}${m.ind}invoke-static/range {${R} .. ${R}}, ${D}->m(Ljava/lang/String;)Ljava/lang/String;${eol}${m.ind}move-result-object ${R}`;
+ let st0=m.li;while(st0>=0&&!L[st0].startsWith('.method'))st0--;
+ const re=new RegExp('^\\s*invoke-direct(?:/range)?\\s*\\{p0[^}]*\\},\\s*L'+rx(m.sup)+';-><init>');let ok=false;
+ for(let j=st0+1;j<m.li;j++)if(re.test(L[j])){L[j]+=`${eol}    invoke-static/range {p0 .. p0}, ${D}->reg(L${m.cls};)V`;ok=true;break}
+ if(!ok)w.push(m.cls.split('/').pop()+': yapıcıda süper çağrısı bulunamadı, reg() eklenemedi.');
+ for(let i=0;i<L.length;i++)if(L[i].includes('invoke-static')){
+  if(L[i].includes(RQ+'->get$default('+RQ+GS))L[i]=L[i].split(RQ+'->get$default(').join(D+'->get(');
+  else if(L[i].includes(RQ+'->post$default('+RQ+PS))L[i]=L[i].split(RQ+'->post$default(').join(D+'->post(')}
+ return{text:L.join(eol),w}}
+function patchExt(x,mc){
+ const eol=x.f.text.includes('\r\n')?'\r\n':'\n',L=x.f.text.split(/\r?\n/);
+ const i=L.findIndex(l=>/^\.method [^\n]*\bgetMainUrl\(\)Ljava\/lang\/String;/.test(l));if(i<0)return null;
+ for(let j=i+1;j<L.length&&!L[j].startsWith('.end method');j++){const m=L[j].match(/^\s*iget-object\s+([vp]\d+),\s*p0,\s*L[^;]+;->mainUrl:Ljava\/lang\/String;/);
+  if(m){L[j]+=`${eol}    invoke-static/range {${m[1]} .. ${m[1]}}, L${mc}$Mx;->cur(Ljava/lang/String;)Ljava/lang/String;${eol}    move-result-object ${m[1]}`;return L.join(eol)}}
+ return null}
+function patchPlugin(f,cls,mx){
+ const eol=f.text.includes('\r\n')?'\r\n':'\n',L=f.text.split(/\r?\n/);
+ const i=L.findIndex(l=>/^\.method [^\n]*\bload\(Landroid\/content\/Context;\)V/.test(l));if(i<0)return null;
+ const mods=L[i].replace(/\bload\(Landroid\/content\/Context;\)V/,'');
+ const nw=[`${mods}load(Landroid/content/Context;)V`,'    .locals 0','',`    invoke-static/range {p0 .. p1}, L${mx};->onLoad(${PL}Landroid/content/Context;)V`,'',`    invoke-virtual {p0, p1}, L${cls};->load$orig(Landroid/content/Context;)V`,'','    return-void','.end method','',''];
+ L[i]=L[i].replace(/\bload\(Landroid\/content\/Context;\)V/,'load$orig(Landroid/content/Context;)V');
+ L.splice(i,0,...nw);return L.join(eol)}
+function mxSmali(c,k,d,f,root){
+ const q=x=>x.replace(/\\/g,'\\\\').replace(/"/g,'\\"'),D=`L${c}$Mx;`,A=`L${c};`,S='Ljava/lang/String;',P=`L${root}/`,
+  CL=`${P}DomainHttpClient;`,RC=`${P}RemoteConfig;`,DS=`${P}DomainSettings;`,MP='Lkotlin/collections/MapsKt;->emptyMap()Ljava/util/Map;';
+ return `.class public final ${D}
+.super Ljava/lang/Object;
+.implements Lkotlin/jvm/functions/Function0;
+.implements Lkotlin/jvm/functions/Function1;
+.implements Lkotlin/jvm/functions/Function2;
+.implements Ljava/lang/Runnable;
+
+.field public static final INSTANCE:${D}
+.field private static volatile api:${A}
+.field private static volatile client:${CL}
+.field private static volatile last:J
+.field private static volatile th:Ljava/lang/Thread;
+.field private static volatile done:Z
+
+.method static constructor <clinit>()V
+    .locals 1
+    new-instance v0, ${D}
+    invoke-direct {v0}, ${D}-><init>()V
+    sput-object v0, ${D}->INSTANCE:${D}
+    return-void
+.end method
+
+.method private constructor <init>()V
+    .locals 0
+    invoke-direct {p0}, Ljava/lang/Object;-><init>()V
+    return-void
+.end method
+
+.method public static m(${S})${S}
+    .locals 2
+    sget-object v0, ${RC}->INSTANCE:${RC}
+    const-string v1, "${q(k)}"
+    invoke-virtual {v0, v1, p0}, ${RC}->cachedDomain(${S}${S})${S}
+    move-result-object v0
+    return-object v0
+.end method
+
+.method public static reg(${A})V
+    .locals 0
+    sput-object p0, ${D}->api:${A}
+    invoke-static {}, ${D}->kick()V
+    return-void
+.end method
+
+.method public static kick()V
+    .locals 6
+    invoke-static {}, Ljava/lang/System;->currentTimeMillis()J
+    move-result-wide v0
+    sget-wide v2, ${D}->last:J
+    sub-long v2, v0, v2
+    const-wide/32 v4, 0xea60
+    cmp-long v2, v2, v4
+    if-ltz v2, :skip
+    sput-wide v0, ${D}->last:J
+    sget-object v2, ${D}->INSTANCE:${D}
+    new-instance v3, Ljava/lang/Thread;
+    invoke-direct {v3, v2}, Ljava/lang/Thread;-><init>(Ljava/lang/Runnable;)V
+    sput-object v3, ${D}->th:Ljava/lang/Thread;
+    invoke-virtual {v3}, Ljava/lang/Thread;->start()V
+    :skip
+    return-void
+.end method
+
+.method public static await()V
+    .locals 3
+    sget-boolean v0, ${D}->done:Z
+    if-nez v0, :ret
+    sget-object v0, ${D}->th:Ljava/lang/Thread;
+    if-eqz v0, :ret
+    invoke-static {}, Landroid/os/Looper;->getMainLooper()Landroid/os/Looper;
+    move-result-object v1
+    invoke-static {}, Landroid/os/Looper;->myLooper()Landroid/os/Looper;
+    move-result-object v2
+    if-eq v1, v2, :ret
+    :try_start_0
+    const-wide/16 v1, 0xfa0
+    invoke-virtual {v0, v1, v2}, Ljava/lang/Thread;->join(J)V
+    :try_end_0
+    .catch Ljava/lang/Throwable; {:try_start_0 .. :try_end_0} :catch_0
+    :catch_0
+    :ret
+    return-void
+.end method
+
+.method public run()V
+    .locals 3
+    :try_start_0
+    sget-object v0, Lkotlin/coroutines/EmptyCoroutineContext;->INSTANCE:Lkotlin/coroutines/EmptyCoroutineContext;
+    sget-object v1, ${D}->INSTANCE:${D}
+    invoke-static {v0, v1}, Lkotlinx/coroutines/BuildersKt;->runBlocking(Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+    move-result-object v0
+    instance-of v1, v0, ${S}
+    if-eqz v1, :end
+    sget-object v1, ${D}->api:${A}
+    if-eqz v1, :end
+    check-cast v0, ${S}
+    invoke-virtual {v1, v0}, ${A}->setMainUrl(${S})V
+    :end
+    :try_end_0
+    .catch Ljava/lang/Throwable; {:try_start_0 .. :try_end_0} :catch_0
+    :catch_0
+    const/4 v0, 0x1
+    sput-boolean v0, ${D}->done:Z
+    return-void
+.end method
+
+.method public invoke(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+    .locals 3
+    sget-object v0, ${RC}->INSTANCE:${RC}
+    const-string v1, "${q(k)}"
+    const-string v2, "${q(f)}"
+    check-cast p2, Lkotlin/coroutines/Continuation;
+    invoke-virtual {v0, v1, v2, p2}, ${RC}->getDomain(${S}${S}Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+    move-result-object v0
+    return-object v0
+.end method
+
+.method public invoke()Ljava/lang/Object;
+    .locals 1
+    sget-object v0, ${D}->api:${A}
+    if-eqz v0, :n
+    invoke-virtual {v0}, ${A}->getMainUrl()${S}
+    move-result-object v0
+    return-object v0
+    :n
+    const-string v0, "${q(f)}"
+    return-object v0
+.end method
+
+.method public invoke(Ljava/lang/Object;)Ljava/lang/Object;
+    .locals 2
+    sget-object v0, ${D}->api:${A}
+    if-eqz v0, :skip
+    instance-of v1, p1, ${S}
+    if-eqz v1, :skip
+    check-cast p1, ${S}
+    invoke-virtual {v0, p1}, ${A}->setMainUrl(${S})V
+    :skip
+    sget-object v0, Lkotlin/Unit;->INSTANCE:Lkotlin/Unit;
+    return-object v0
+.end method
+
+.method private static declared-synchronized c()${CL}
+    .locals 5
+    sget-object v0, ${D}->client:${CL}
+    if-nez v0, :done
+    new-instance v0, ${CL}
+    const-string v1, "${q(k)}"
+    const-string v2, "${q(f)}"
+    sget-object v3, ${D}->INSTANCE:${D}
+    move-object v4, v3
+    invoke-direct {v0, v1, v2, v3, v4}, ${CL}-><init>(${S}${S}Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;)V
+    sput-object v0, ${D}->client:${CL}
+    :done
+    return-object v0
+.end method
+
+.method public static rb(${S})${S}
+    .locals 4
+    if-nez p0, :a
+    return-object p0
+    :a
+    sget-object v0, ${D}->api:${A}
+    if-nez v0, :b
+    return-object p0
+    :b
+    invoke-virtual {v0}, ${A}->getMainUrl()${S}
+    move-result-object v0
+    sget-object v1, ${RC}->INSTANCE:${RC}
+    const-string v2, "${q(f)}"
+    const-string v3, "${q(k)}"
+    invoke-virtual {v1, p0, v2, v0, v3}, ${RC}->rebaseSiteUrl(${S}${S}${S}${S})${S}
+    move-result-object p0
+    invoke-virtual {v1, p0, v2, v0, v3}, ${RC}->rebaseSiteUrl(${S}${S}${S}${S})${S}
+    move-result-object p0
+    return-object p0
+.end method
+
+.method public static cur(${S})${S}
+    .locals 2
+    const-string v0, "${q(f)}"
+    invoke-virtual {v0, p0}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+    move-result v0
+    if-eqz v0, :ret
+    sget-object v0, ${D}->api:${A}
+    if-eqz v0, :ret
+    invoke-virtual {v0}, ${A}->getMainUrl()${S}
+    move-result-object p0
+    :ret
+    return-object p0
+.end method
+
+.method public static onLoad(${PL}Landroid/content/Context;)V
+    .locals 6
+    :try_start_0
+    sget-object v0, ${DS}->INSTANCE:${DS}
+    invoke-virtual {v0, p1}, ${DS}->initialize(Landroid/content/Context;)V
+    move-object v1, p0
+    const-string v2, "${q(k)}"
+    const-string v3, "${q(d)}"
+    const-string v4, "${q(f)}"
+    sget-object v5, ${D}->INSTANCE:${D}
+    invoke-virtual/range {v0 .. v5}, ${DS}->installIfSupported(${PL}${S}${S}${S}Lkotlin/jvm/functions/Function1;)Z
+    :try_end_0
+    .catch Ljava/lang/Throwable; {:try_start_0 .. :try_end_0} :catch_0
+    :catch_0
+    return-void
+.end method
+
+.method public static get(${RQ}${GS}
+    .locals 8
+    invoke-static {}, ${D}->kick()V
+    invoke-static {}, ${D}->await()V
+    invoke-static/range {p1 .. p1}, ${D}->rb(${S})${S}
+    move-result-object p1
+    const/16 v1, 0xfe0
+    and-int v0, p15, v1
+    if-ne v0, v1, :orig
+    and-int/lit8 v0, p15, 0x2
+    if-eqz v0, :h
+    invoke-static {}, ${MP}
+    move-result-object p2
+    :h
+    and-int/lit8 v0, p15, 0x4
+    if-eqz v0, :r
+    const/4 p3, 0x0
+    :r
+    and-int/lit8 v0, p15, 0x8
+    if-eqz v0, :p
+    invoke-static {}, ${MP}
+    move-result-object p4
+    :p
+    and-int/lit8 v0, p15, 0x10
+    if-eqz v0, :c
+    invoke-static {}, ${MP}
+    move-result-object p5
+    :c
+    invoke-static {}, ${D}->c()${CL}
+    move-result-object v0
+    move-object/from16 v1, p1
+    move-object/from16 v2, p2
+    move-object/from16 v3, p3
+    move-object/from16 v4, p4
+    move-object/from16 v5, p5
+    move-object/from16 v6, p14
+    invoke-virtual/range {v0 .. v6}, ${CL}->get(${S}Ljava/util/Map;${S}Ljava/util/Map;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+    move-result-object v0
+    return-object v0
+    :orig
+    invoke-static/range {p0 .. p16}, ${RQ}->get$default(${RQ}${GS}
+    move-result-object v0
+    return-object v0
+.end method
+
+.method public static post(${RQ}${PS}
+    .locals 8
+    invoke-static {}, ${D}->kick()V
+    invoke-static {}, ${D}->await()V
+    invoke-static/range {p1 .. p1}, ${D}->rb(${S})${S}
+    move-result-object p1
+    const v1, 0xffd8
+    and-int v0, p19, v1
+    if-ne v0, v1, :orig
+    and-int/lit8 v0, p19, 0x2
+    if-eqz v0, :h
+    invoke-static {}, ${MP}
+    move-result-object p2
+    :h
+    and-int/lit8 v0, p19, 0x4
+    if-eqz v0, :r
+    const/4 p3, 0x0
+    :r
+    and-int/lit8 v0, p19, 0x20
+    if-eqz v0, :d
+    invoke-static {}, ${MP}
+    move-result-object p6
+    :d
+    invoke-static {}, ${D}->c()${CL}
+    move-result-object v0
+    move-object/from16 v1, p1
+    move-object/from16 v2, p2
+    move-object/from16 v3, p3
+    move-object/from16 v4, p6
+    move-object/from16 v5, p18
+    invoke-virtual/range {v0 .. v5}, ${CL}->post(${S}Ljava/util/Map;${S}Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+    move-result-object v0
+    return-object v0
+    :orig
+    invoke-static/range {p0 .. p20}, ${RQ}->post$default(${RQ}${PS}
+    move-result-object v0
+    return-object v0
+.end method
+`}
+
+function build(){
+ const a=st,o=opts(),out=[],p=a.plugs[pi],pm=a.mains[mi];a.warn=[];
+ for(const f of a.clo){let t=f.text;if(a.durl&&o.url&&o.url!=a.durl)t=t.split(a.durl).join(o.url);out.push({name:f.name.replace(/\\/g,'/'),text:t})}
+ const tout=new Map();
+ for(const m of a.mains){if(m.done)continue;const r=patchMain(m);a.warn.push(...r.w);tout.set(m.f.name.replace(/\\/g,'/'),r.text);
+  out.push({name:m.cls+'$Mx.smali',text:mxSmali(m.cls,keyOf(m),m.name||m.cls.split('/').pop(),m.url,a.root)})}
+ for(const x of a.exts){const m=a.mains.find(z=>z.url==x.url&&!z.done);if(!m)continue;const t=patchExt(x,m.cls);if(t)tout.set(x.f.name.replace(/\\/g,'/'),t);else a.warn.push(x.cls.split('/').pop()+': getMainUrl() yamalanamadı.')}
+ const pt=patchPlugin(p.f,p.cls,pm.cls+'$Mx');if(!pt)a.warn.push('Plugin load() yamalanamadı.');else tout.set(p.f.name.replace(/\\/g,'/'),pt);
+ for(const [n,t] of tout)out.push({name:n,text:t});
+ return out}
+function audit(){
+ const a=st;if(!a||!a.rc||!a.plugs.length||!a.mains.length)return;build();const R=[];
+ const L=(ok,t)=>R.push(`<div class="${ok?'ok':'w'}">${ok?'✓':'⚠'} ${t}</div>`);
+ a.mains.forEach(m=>L(m.g+m.p>0&&!m.gx&&!m.px,`<b>${esc(m.cls.split('/').pop())}</b> (anahtar <code>${esc(keyOf(m))}</code>): ${m.g} get, ${m.p} post DomainHttpClient'a yönlendirilecek${m.gx+m.px?`, <b>${m.gx+m.px} farklı imzalı çağrı yalnızca adres düzeltmesiyle gider</b>`:''}${m.done?' (zaten yamalı)':''}`));
+ a.exts.forEach(x=>{const same=a.mains.some(m=>m.url==x.url);L(same,`<b>${esc(x.cls.split('/').pop())}</b> (extractor): ${same?'mainUrl güncel alan adına bağlanacak':'ayrı adres '+esc(x.url)+', dokunulmaz'}`)});
+ a.warn.forEach(w=>L(false,esc(w)));
+ const hosts=new Map(),mh=new Set(a.mains.map(m=>host(m.url)));
+ tgt.forEach(f=>{for(const m of f.text.matchAll(/"(https?:\/\/[^"\\\s]+)"/g)){const h=host(m[1]);if(h)hosts.set(h,(hosts.get(h)||0)+1)}});
+ const other=[...hosts].filter(([h])=>!mh.has(h));
+ if(other.length)L(false,'Sabit kalan başka adresler (oynatıcı/CDN olabilir, otomatik değişmez): '+other.map(([h,n])=>'<code>'+esc(h)+'</code>'+(n>1?' ×'+n:'')).join(', '));
+ const u=opts().url;L(!!u&&a.durl!==u?true:!!u,u?'Paket domains.json adresi: <code>'+esc(u)+'</code>':'domains.json adresi boş, paketteki adres kalır');
+ if(a.existing)L(false,'Eklentide zaten Manitux sistemi olabilir, çakışma riski.');
+ L(true,`Plugin <code>${esc(a.plugs[pi].cls.split('/').pop())}</code> load() yamalandı (DomainSettings.initialize, ayar ekranı), manifest değişmez.`);
+ $('#rp').innerHTML='<span class="l">Kontrol raporu</span>'+R.join('')}
+function dl(){
+ const a=st;if(!a||!a.rc||!a.plugs.length||!a.mains.length)return;
+ if(!/^https:\/\//.test($('#url').value.trim())){alert('3. adımda https:// ile başlayan domains.json linkini yaz.');return}
+ const x=document.createElement('a');x.href=URL.createObjectURL(mkZip(build()));x.download='manitux-yamali.zip';x.click()}
+async function initBuiltin(){
+ if(!BUILTIN_B64||don.length)return;
+ try{don=await readZip(Uint8Array.from(atob(BUILTIN_B64),c=>c.charCodeAt(0)).buffer);donBuiltin=true;run()}catch(e){}}
+{const _a=addF;addF=async function(fl,d){if(d&&donBuiltin){don=[];donBuiltin=false}return _a(fl,d)}}
+initBuiltin();
+
+</script></body></html>

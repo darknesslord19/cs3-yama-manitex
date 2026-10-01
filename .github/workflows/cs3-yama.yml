@@ -1,0 +1,48 @@
+name: CS3 Yama
+
+on:
+  push:
+    paths:
+      - 'job/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: smali ve baksmali araçlarını indir
+        run: |
+          mvn -q -B -f tools/pom.xml dependency:copy-dependencies -DoutputDirectory="$PWD/tools/jars"
+          ls tools/jars | head -20
+
+      - name: CS3 dosyasını yamala
+        run: node tools/patch.js job/config.json
+
+      - name: Sonucu patched dalına gönder
+        if: always()
+        run: |
+          mkdir -p /tmp/out && cp -r out/. /tmp/out/ 2>/dev/null || true
+          echo "${GITHUB_SHA}" > /tmp/out/source-sha.txt
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git checkout --orphan patched
+          git rm -rf . -q || true
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -r /tmp/out/. .
+          git add -A
+          git commit -q -m "Yamalı CS3 (${GITHUB_SHA::7})"
+          git push -f origin patched
